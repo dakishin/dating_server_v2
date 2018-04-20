@@ -31,102 +31,108 @@ import javax.persistence.Table
         "" +
         "" +
         "")
-class User : BaseEntity() {
+class User(
+        @Column(name = "is_online")
+        val online: Boolean = false,
 
-    @Column(name = "is_online")
-    var online: Boolean = false
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "last_online_date", nullable = false, columnDefinition = "TIMESTAMP")
-    var lastOnlineDate: Date? = null
-
-
-    var phone: String? = null
-    var name: String? = null
-
-    var email: String? = null
-
-    @Column(name = "is_banned")
-    var isBanned: Boolean = false
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = arrayOf(CascadeType.REMOVE))//reverse side
-    var avatars: Set<Avatar> = HashSet()
-
-    /**
-     * 0 муж
-     * 1 женский
-     */
-    var sex: Int? = null
-
-    val isRussian: Boolean
-        get() = RUSSIAN_LOCALE.equals(locale, ignoreCase = true)
-
-    /**
-     * 0 в браке не состоял(а)
-     * 1 в разводе
-     * 2 во вдовстве
-     * 3 состою в браке
-     * 4 помолвлен(а)
-     */
-    var marriage: Int? = null
-
-    var birthDate: Long? = null
-
-    var weight: Int? = null
-    var height: Int? = null
-
-    var children: Int? = null //0 -no, 1 yes
-
-    /**
-     * 0 православное христианство (член Церкви)
-     * 1 православное христианство (воцерковляюсь)
-     * 2 православное христианство (просто уважаю)
-     * 3 католицизм
-     * 4 протестантизм
-     * 5 ислам
-     * 6 прочее
-     * 6 на пути к вере
-     * 8 атеизм
-     */
-    var religion: Int? = null
-    /**
-     * Географические названия ня языке  локали пользователя
-     */
-    var countryCode: String? = null
-    var country: String? = null
-    var city: String? = null
-
-    var locale: String? = null
-
-    var latitude: Double? = null
-    var longitude: Double? = null
-
-    var password: String? = null
-
-    @Column(name = "telegram_id")
-    var telegramId: String? = null
+        @Temporal(TemporalType.TIMESTAMP)
+        @Column(name = "last_online_date", nullable = false, columnDefinition = "TIMESTAMP")
+        val lastOnlineDate: Date? = null,
 
 
-    /**
-     * 0 коледж
-     * 1 техникум
-     * 2 бакалавр
-     * 3 магист
-     * 4 ВУЗ
-     */
-    var education: Int? = null
+        val phone: String? = null,
+        val name: String? = null,
 
-    var pushId: String? = null
+        val email: String? = null,
+
+        @Column(name = "is_banned")
+        val isBanned: Boolean = false,
+
+        @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = arrayOf(CascadeType.REMOVE))
+//reverse side
+        val avatars: Set<Avatar> = HashSet(),
+
+        /**
+         * 0 муж
+         * 1 женский
+         */
+        val sex: Int? = null,
+
+
+        /**
+         * 0 в браке не состоял(а)
+         * 1 в разводе
+         * 2 во вдовстве
+         * 3 состою в браке
+         * 4 помолвлен(а)
+         */
+        val marriage: Int? = null,
+
+        val birthDate: Long? = null,
+
+        val weight: Int? = null,
+        val height: Int? = null,
+
+        val children: Int? = null ,//0 -no, 1 yes
+
+        /**
+         * 0 православное христианство (член Церкви)
+         * 1 православное христианство (воцерковляюсь)
+         * 2 православное христианство (просто уважаю)
+         * 3 католицизм
+         * 4 протестантизм
+         * 5 ислам
+         * 6 прочее
+         * 6 на пути к вере
+         * 8 атеизм
+         */
+        val religion: Int? = null,
+        /**
+         * Географические названия ня языке  локали пользователя
+         */
+        val countryCode: String? = null,
+        val country: String? = null,
+        val city: String? = null,
+
+        val locale: String? = null,
+
+        val latitude: Double? = null,
+        val longitude: Double? = null,
+
+        val password: String? = null,
+
+        @Column(name = "telegram_id")
+        val telegramId: String? = null,
+
+
+        /**
+         * 0 коледж
+         * 1 техникум
+         * 2 бакалавр
+         * 3 магист
+         * 4 ВУЗ
+         */
+        val education: Int? = null,
+
+        val pushId: String? = null,
+
+
+        val isSubscription: Boolean = false,
+
+        @Column(name = "phone_uuid")
+        val phoneUuid: String? = null
+
+) : BaseEntity() {
+
 
     //todo: брать класс для десериализации из параметров анотации
     @Type(type = "com.dating.server.model.JsonStringUserType", parameters = [Parameter(name = "class", value = "com.dating.server.model.ProfileQuestions")])
     @Column(name = "profile_questions")
-    var profileQuestions = ProfileQuestions()
+    val profileQuestions = ProfileQuestions()
+            
 
-    var isSubscription: Boolean = false
-
-    @Column(name = "phone_uuid")
-    var phoneUuid: String? = null
+    val isRussian: Boolean
+        get() = RUSSIAN_LOCALE.equals(locale, ignoreCase = true)
 
     val mainAvatarUuid: String?
         get() {
@@ -151,7 +157,5 @@ class User : BaseEntity() {
     }
 
 
-    companion object {
-        var RUSSIAN_LOCALE = "ru"
-    }
 }
+val RUSSIAN_LOCALE = "ru"

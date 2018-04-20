@@ -4,11 +4,10 @@ package com.dating.server;
 /**
  * Created by dakishin@mail.com  14.04.18.
  */
-
 //@Configuration
 //@ComponentScan
+//@EnableWebFlux
 //@PropertySource(value = "classpath:application.properties", ignoreResourceNotFound = true)
-//@SpringBootApplication
 //public class Application {
 //
 //    @Value("${server.port:8080}")
@@ -31,4 +30,4 @@ package com.dating.server;
 //    }
 //
 //}
-
+//

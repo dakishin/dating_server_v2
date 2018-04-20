@@ -1,33 +1,38 @@
 package com.dating.server.model
 
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
 import java.util.*
 import javax.persistence.*
+
 
 /**
  * Created by dakishin@mail.com  29.10.17.
  */
 @javax.persistence.Entity
 @Table(name = "treba")
-class Treba : BaseEntity() {
+class Treba(
+        @ManyToOne(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.LAZY)
+        @JoinColumn(name = "owner_uuid")
+        var owner: TelegramUser,
 
-    @ManyToOne(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_uuid")
-    var owner: TelegramUser? = null
+        @Column(name = "names")
+        val names: String,
 
-    @Column(name = "names")
-    var names: String? = null
+        @ManyToOne(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.LAZY)
+        @JoinColumn(name = "priest_uuid")
+        val priest: User? = null,
 
-    @ManyToOne(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.LAZY)
-    @JoinColumn(name = "priest_uuid")
-    var priest: User? = null
+        @Column(name = "type")
+        @Enumerated(EnumType.STRING)
+        val type: TrebaType,
 
-    @Column(name = "type")
-    @Enumerated(EnumType.STRING)
-    var type: TrebaType? = null
+        @Column(name = "status")
+        @Enumerated(EnumType.STRING)
+        var status: TrebaStatus = TrebaStatus.WAIT
 
-    @Column(name = "status")
-    @Enumerated(EnumType.STRING)
-    var status = TrebaStatus.WAIT
+) : BaseEntity() {
+
 
     fun priestName(): String {
         val name = priest?.name
@@ -57,37 +62,36 @@ class Treba : BaseEntity() {
     }
 
 
-    fun toApi(): TrebaDTOApi {
-        return TrebaDTOApi(this)
-    }
 
-    class TrebaDTOApi constructor(treba: Treba) {
+}
 
-        var owner: String
-        var names: List<String> = ArrayList()
-        var type: TrebaType? = null
-        var priestUuid: String? = null
-        var uuid: String
-        var createDate: Long? = null
-        var status: TrebaStatus
+data class TrebaDTOApi(
+        val owner: String,
+        val names: List<String>,
+        val type: Treba.TrebaType,
+        val priestUuid: String?,
+        val uuid: String,
+        val createDate: Long,
+        val status: Treba.TrebaStatus
+) {
 
-        init {
-//            try {
-//                this.names = Gson().fromJson(treba.names, object : TypeToken<ArrayList<String>>() {
-//
-//                }.type)
-//            } catch (e: Exception) {
-//            }
+    companion object {
 
-            this.type = treba.type
-            this.owner = treba.owner!!.uuid
-            if (treba.priest != null) {
-                this.priestUuid = treba.priest!!.uuid
+        fun fromTreba(treba: Treba): TrebaDTOApi {
+            val mapper = ObjectMapper()
+            var names = arrayListOf<String>()
+
+            try {
+                names = mapper.readValue(treba.names, object : TypeReference<ArrayList<String>>() {})
+            } catch (e: Exception) {
             }
-            this.createDate = treba.createDate.time
-            this.uuid = treba.uuid
-            this.status = treba.status
+
+            return TrebaDTOApi(type = treba.type, owner = treba.owner.uuid,
+                    createDate = treba.createDate.time, priestUuid = treba.priest?.uuid
+                    , names = names, status = treba.status, uuid = treba.uuid)
         }
     }
+
+
 }
 

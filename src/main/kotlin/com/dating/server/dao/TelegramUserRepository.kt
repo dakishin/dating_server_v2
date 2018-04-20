@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.dating.server.dao;
+package com.dating.server.dao
 
-import com.dating.server.model.User;
-import org.springframework.data.repository.CrudRepository;
+import com.dating.server.model.TelegramUser
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.CrudRepository
+import org.springframework.data.repository.query.Param
 
-/**
- * Simple repository interface for {@link User} instances. The interface is used to declare so called query methods,
- * methods to retrieve single entities or collections of them.
- *
- * @author Oliver Gierke
- * @author Thomas Darimont
- * @author Christoph Strobl
- */
-public interface UserRepository extends CrudRepository<User, String> {
+interface TelegramUserRepository : CrudRepository<TelegramUser, String> {
 
+
+    @Query("select user from TelegramUser user  where user.telegramId= :telegramId ")
+    fun getByTelegramId(@Param("telegramId") telegramId: String): TelegramUser?
 }
