@@ -21,7 +21,7 @@ class DatingApiTest {
     fun testHello() {
         val client = WebTestClient.bindToController(DatingApi(userService)).build()
 
-        val createUserParam =CreateUserParam("hello")
+        val createUserParam = CreateUserParam("hello")
 
         client.post()
                 .uri("/create")
