@@ -1,11 +1,11 @@
 package com.dating.server.api
 
+import com.dating.server.BaseTest
 import com.dating.server.dao.TelegramUserRepository
+import com.dating.server.dao.TrebaRepository
 import com.dating.server.dao.UserRepository
-import com.dating.server.model.TelegramUser
-import com.dating.server.model.Treba
+import com.dating.server.model.*
 import com.dating.server.model.TrebaDTOApi
-import com.dating.server.model.User
 import com.dating.server.service.TelegramUserService
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.Assert
@@ -21,28 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.reactive.server.WebTestClient
 
 
-@RunWith(SpringRunner::class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class DatingApiTest {
-
-    @Autowired
-    lateinit var context: ApplicationContext
-
-    @Autowired
-    lateinit var telegramUserService: TelegramUserService
-
-    @Autowired
-    lateinit var telegramUserRepository: TelegramUserRepository
-
-    @Autowired
-    lateinit var trebaRepository: TelegramUserRepository
-
-    @Autowired
-    lateinit var userRepository: UserRepository
-
-    val client: WebTestClient by lazy {
-        WebTestClient.bindToApplicationContext(context).build()
-    }
+class DatingApiTest : BaseTest() {
 
 
     @Test
@@ -68,10 +47,10 @@ class DatingApiTest {
 
     @Test
     fun shouldCreateTreba() {
-        val telegrmaUser = create()
-        val user = createUser()
+        val telegrmaUser = createTelegramUser()
+        val priest = createUser()
         val param = CreateTrebaParam(telegrmaUser.telegramId!!.toInt(), arrayListOf("петр"),
-                Treba.TrebaType.O_ZDRAVII, user.uuid)
+                Treba.TrebaType.O_ZDRAVII, priest.uuid)
 
 
         val trebaDTOApi = client
@@ -86,18 +65,82 @@ class DatingApiTest {
 
         Assert.assertEquals(param.type, trebaDTOApi?.type)
         Assert.assertEquals(param.priestUuid, trebaDTOApi?.priestUuid)
-        Assert.assertEquals(user.uuid, trebaDTOApi?.owner)
+        Assert.assertEquals(telegrmaUser.uuid, trebaDTOApi?.owner)
         Assert.assertEquals(param.names, trebaDTOApi?.names)
 
     }
 
-    private fun createUser(): User {
-        val user = User(tele)
-        userRepository.save(user)
-        return user
+    @Test
+    fun shouldGetTrebas() {
+        val treba1 = createTreba()
+
+        val trebaFromDb = trebaRepository.getByOwner(treba1.owner.telegramId!!)
+
+        Assert.assertNotNull(trebaFromDb[0])
+
+        val trebas: List<TrebaDTOApi> =
+                client
+                        .post()
+                        .uri("/api_v3/getTrebas/${treba1.owner.telegramId}")
+                        .syncBody("")
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .exchange()
+                        .expectBody(object : ParameterizedTypeReference<Response<List<TrebaDTOApi>>>() {})
+                        .returnResult().responseBody?.result!!
+
+        val trebaResult1 = trebas[0]
+
+        Assert.assertEquals(trebaResult1.type, treba1.type)
+        Assert.assertEquals(trebaResult1.priestUuid, treba1.priest.uuid)
+        Assert.assertEquals(trebaResult1.uuid, treba1.uuid)
     }
 
-    private fun create(): TelegramUser {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    @Test
+    fun shouldSendGeoData() {
+        val telegramUser = createTelegramUser()
+        val param = SendGeoDataParam(telegramUser.telegramId!!.toLong(), random().toDouble(), random().toDouble(), randomStr())
+
+
+        val trebaDTOApi = client
+                .post()
+                .uri("/api_v3/sendGeoDataV2")
+                .syncBody(ObjectMapper().writeValueAsString(param))
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .exchange()
+                .expectBody(object : ParameterizedTypeReference<Response<Unit>>() {})
+                .returnResult().responseBody?.result
+
+        val newTelegramUser = telegramUserRepository.getByTelegramId(telegramUser.telegramId!!)!!
+        Assert.assertEquals(newTelegramUser.latitude, param.lat)
+        Assert.assertEquals(newTelegramUser.longitude, param.lon)
+        Assert.assertEquals(newTelegramUser.city, param.city)
+
+
     }
+
+    @Test
+    fun shouldSearch() {
+        createTelegramUser()
+        val telegramUser = createTelegramUser()
+
+        val user = telegramUserRepository.searchNear(telegramUser.telegramId!!)
+
+        val users: List<TelegramUserDistance> =
+                client
+                        .post()
+                        .uri("/api_v3/search/${telegramUser.telegramId}")
+                        .syncBody("")
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .exchange()
+                        .expectBody(object : ParameterizedTypeReference<Response<List<TelegramUserDistance>>>() {})
+                        .returnResult().responseBody?.result!!
+
+        val userBack = users[0]
+        Assert.assertEquals(userBack.uuid, telegramUser.uuid)
+    }
+
+
 }

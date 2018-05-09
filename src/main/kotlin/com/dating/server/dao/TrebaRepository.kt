@@ -16,9 +16,13 @@
 package com.dating.server.dao
 
 import com.dating.server.model.Treba
+import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
+import org.springframework.data.repository.query.Param
 
 interface TrebaRepository : CrudRepository<Treba, String> {
 
+    @Query("select treba from Treba treba  where treba.owner.telegramId = :telegramId ")
+    fun getByOwner(@Param("telegramId") telegramId: String): List<Treba>
 
 }

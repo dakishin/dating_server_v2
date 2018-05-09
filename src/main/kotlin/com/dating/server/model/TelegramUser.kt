@@ -9,7 +9,8 @@ import javax.persistence.*
 @javax.persistence.Entity
 @Table(name = "telegram_user")
 open class TelegramUser(
-        @Column(name = "telegram_id")
+
+        @Column(name = "telegram_id",unique = true)
         val telegramId: String? = null,
 
         @Column(name = "first_name")
@@ -18,9 +19,9 @@ open class TelegramUser(
         @Column(name = "last_name")
         val lastName: String? = null,
 
-        val city: String? = null,
+        var city: String? = null,
 
-        val latitude: Double? = null,
-        val longitude: Double? = null
+        var latitude: Double? = null,
+        var longitude: Double? = null
 
 ) : BaseEntity()

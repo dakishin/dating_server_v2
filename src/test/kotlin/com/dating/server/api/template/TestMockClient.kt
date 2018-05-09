@@ -8,14 +8,14 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
 
 
-@RunWith(SpringRunner::class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@RunWith(SpringRunner::class)
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class TestMockClient {
 
     @Autowired
     lateinit var userService: UserService
 
-    @Test
+//    @Test
     fun testHello() {
 //        val client = WebTestClient.bindToController(DatingApi(userService)).build()
 //

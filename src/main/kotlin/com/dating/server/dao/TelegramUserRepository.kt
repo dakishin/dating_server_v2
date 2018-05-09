@@ -16,6 +16,7 @@
 package com.dating.server.dao
 
 import com.dating.server.model.TelegramUser
+import com.dating.server.model.TelegramUserDistance
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.Param
@@ -25,4 +26,16 @@ interface TelegramUserRepository : CrudRepository<TelegramUser, String> {
 
     @Query("select user from TelegramUser user  where user.telegramId= :telegramId ")
     fun getByTelegramId(@Param("telegramId") telegramId: String): TelegramUser?
+
+    @Query("SELECT " +
+            "" +
+            " calc_distance(user_near.latitude,user_near.longitude,user_owner.latitude,user_owner.longitude) AS distance, " +
+            " user_near.* " +
+            "FROM " +
+            " telegram_user AS user_near ,telegram_user AS user_owner" +
+            " WHERE" +
+            " (user_near.latitude IS NOT NULL) AND (user_near.longitude IS NOT NULL) AND user_owner.telegram_id=:telegramId AND (user_near.telegram_id<>user_owner.telegram_id)" +
+            " ORDER BY " +
+            " distance ASC", nativeQuery = true)
+    fun searchNear(@Param("telegramId") telegramId: String): List<TelegramUserDistance>
 }

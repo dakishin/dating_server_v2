@@ -37,7 +37,7 @@ class User(
 
         @Temporal(TemporalType.TIMESTAMP)
         @Column(name = "last_online_date", nullable = false, columnDefinition = "TIMESTAMP")
-        val lastOnlineDate: Date? = null,
+        val lastOnlineDate: Date = Date(),
 
 
         val phone: String? = null,

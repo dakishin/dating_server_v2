@@ -22,8 +22,8 @@ import reactor.test.test
  * Created by dakishin@mail.com  14.04.18.
  */
 //@ExtendWith(SpringExtension::class)
-@RunWith(SpringRunner::class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@RunWith(SpringRunner::class)
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class TestRealClient {
 
     @LocalServerPort
@@ -39,7 +39,7 @@ class TestRealClient {
     //    // TODO Migrate to WebTestClient when https://youtrack.jetbrains.com/issue/KT-5464 will be fixed
     lateinit var client: WebClient
 
-    @Test
+//    @Test
     fun testHello() {
         client = WebClient.create("http://localhost:$port")
 

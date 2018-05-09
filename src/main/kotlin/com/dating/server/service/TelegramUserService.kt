@@ -18,4 +18,13 @@ class TelegramUserService(val telegramUserRepository: TelegramUserRepository) {
         return telegramUser
     }
 
+    fun saveGeoData(telegramId: String, lat: Double, lon: Double, city: String?) {
+        val user = telegramUserRepository.getByTelegramId(telegramId)
+        user ?: return
+        user.longitude = lon
+        user.latitude = lat
+        user.city = city
+        telegramUserRepository.save(user)
+    }
+
 }

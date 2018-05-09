@@ -11,27 +11,34 @@ import javax.persistence.*
  */
 @javax.persistence.Entity
 @Table(name = "treba")
-class Treba(
-        @ManyToOne(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.LAZY)
-        @JoinColumn(name = "owner_uuid")
-        var owner: TelegramUser,
+class Treba() : BaseEntity() {
 
-        @Column(name = "names")
-        val names: String,
+    @ManyToOne(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_uuid")
+    lateinit var owner: TelegramUser
 
-        @ManyToOne(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.LAZY)
-        @JoinColumn(name = "priest_uuid")
-        val priest: User? = null,
+    @Column(name = "names")
+    lateinit var names: String
 
-        @Column(name = "type")
-        @Enumerated(EnumType.STRING)
-        val type: TrebaType,
+    @ManyToOne(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.LAZY)
+    @JoinColumn(name = "priest_uuid")
+    lateinit var priest: User
 
-        @Column(name = "status")
-        @Enumerated(EnumType.STRING)
-        var status: TrebaStatus = TrebaStatus.WAIT
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    lateinit var type: TrebaType
 
-) : BaseEntity() {
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    var status: TrebaStatus = TrebaStatus.WAIT
+
+    constructor(owner: TelegramUser, names: String, priest: User, type: TrebaType, status: TrebaStatus = TrebaStatus.WAIT) : this() {
+        this.owner = owner
+        this.names = names
+        this.priest = priest
+        this.type = type
+        this.status = status
+    }
 
 
     fun priestName(): String {
@@ -60,7 +67,6 @@ class Treba(
     enum class TrebaStatus {
         WAIT, TAKEN
     }
-
 
 
 }

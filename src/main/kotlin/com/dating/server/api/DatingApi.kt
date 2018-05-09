@@ -1,21 +1,28 @@
 package com.dating.server.api
 
+import com.dating.server.dao.TelegramUserRepository
+import com.dating.server.dao.TrebaRepository
 import com.dating.server.model.TelegramUser
+import com.dating.server.model.TelegramUserDistance
 import com.dating.server.model.Treba
 import com.dating.server.model.TrebaDTOApi
 import com.dating.server.service.TelegramUserService
 import com.dating.server.service.TrebaService
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
+import java.util.ArrayList
+import java.util.logging.Level
 
 /**
  * Created by dakishin@mail.com  14.04.18.
  */
 @RestController()
 @RequestMapping(path = ["/api_v3"])
-class DatingApi(val telegramUserService: TelegramUserService, val trebaService: TrebaService) {
+class DatingApi(val telegramUserService: TelegramUserService, val trebaService: TrebaService, val trebaRepository: TrebaRepository, val telegramUserRepository: TelegramUserRepository) {
 
     @Transient
     private val LOG = LoggerFactory.getLogger(DatingApi::class.java)
@@ -40,6 +47,33 @@ class DatingApi(val telegramUserService: TelegramUserService, val trebaService: 
             }
 
 
+    @PostMapping(path = ["/getTrebas/{telegramId}"])
+    fun getTrebas(@PathVariable("telegramId") telegramId: Int) =
+            executeApiMethod {
+                val trebas = trebaRepository.getByOwner(telegramId.toString())
+                val trebaDTOApis = ArrayList<TrebaDTOApi>()
+                trebas.forEach {
+                    trebaDTOApis.add(TrebaDTOApi.fromTreba(it))
+                }
+                trebaDTOApis
+            }
+
+
+    @PostMapping(path = ["/sendGeoDataV2"])
+    fun sendGeoDatav2(@RequestBody param: SendGeoDataParam) =
+            executeApiMethod {
+                telegramUserService.saveGeoData(param.telegramId.toString(), param.lat, param.lon, param.city)
+                Unit
+            }
+
+
+    @GetMapping("/search/{telegramId}")
+    fun search(@PathVariable("telegramId") telegramId: String) =
+            executeApiMethod {
+                telegramUserRepository.searchNear(telegramId)
+            }
+
+
     fun <T> executeApiMethod(service: () -> T): Single<Response<T>> =
             Single
                     .fromCallable {
@@ -56,8 +90,7 @@ class DatingApi(val telegramUserService: TelegramUserService, val trebaService: 
 
 }
 
-data class RegisterTelegramUserParam(val telegramId: String, val firstName: String? = null, val lastName: String? = null)
-data class CreateTrebaParam(val telegramUserId: Int, val names: List<String>, val type: Treba.TrebaType, val priestUuid: String)
+
 
 
 

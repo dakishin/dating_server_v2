@@ -15,11 +15,11 @@ import org.springframework.test.context.junit4.SpringRunner
 class UserServiceTest {
 
     @Autowired
-    lateinit var userService: UserService
+    lateinit var telegramUserService: TelegramUserService
 
     @Test
     fun testSaveUser() {
-        Assert.assertNotNull(userService)
+        Assert.assertNotNull(telegramUserService)
 
     }
 
