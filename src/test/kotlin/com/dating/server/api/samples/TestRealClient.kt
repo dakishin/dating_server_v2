@@ -1,4 +1,4 @@
-package com.dating.server.api.template
+package com.dating.server.api.samples
 
 import com.dating.server.api.RegisterTelegramUserParam
 import com.dating.server.api.Response
@@ -7,14 +7,10 @@ import com.dating.server.model.TelegramUser
 import com.dating.server.service.TelegramUserService
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.MediaType
-import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.test.test
 

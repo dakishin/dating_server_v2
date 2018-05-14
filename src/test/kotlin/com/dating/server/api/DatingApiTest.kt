@@ -26,7 +26,7 @@ class DatingApiTest : BaseTest() {
 
     @Test
     fun shouldCreateTelegramUser() {
-        val telegramId = "id"
+        val telegramId = randomStr()
         val param = RegisterTelegramUserParam(telegramId, "name", "lastname")
         val result = client
                 .post()
@@ -122,16 +122,13 @@ class DatingApiTest : BaseTest() {
 
     @Test
     fun shouldSearch() {
-        createTelegramUser()
-        val telegramUser = createTelegramUser()
-
-        val user = telegramUserRepository.searchNear(telegramUser.telegramId!!)
+        val userToFind = createTelegramUser(55.752411, 37.385560)
+        val telegramUser = createTelegramUser(55.775639, 37.885438)
 
         val users: List<TelegramUserDistance> =
                 client
-                        .post()
+                        .get()
                         .uri("/api_v3/search/${telegramUser.telegramId}")
-                        .syncBody("")
                         .accept(MediaType.APPLICATION_JSON_UTF8)
                         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .exchange()
@@ -139,8 +136,30 @@ class DatingApiTest : BaseTest() {
                         .returnResult().responseBody?.result!!
 
         val userBack = users[0]
-        Assert.assertEquals(userBack.uuid, telegramUser.uuid)
+        Assert.assertEquals(userBack.telegramId, userToFind.telegramId)
     }
 
+
+    @Test
+    fun shouldCreatePurchase() {
+        val telegrmaUser = createTelegramUser()
+        val param = CreatePurchaseParam(telegrmaUser.telegramId!!.toLong(), "sku", "orderId")
+
+
+        val purchase = client
+                .post()
+                .uri("/api_v3/createPurchase")
+                .syncBody(ObjectMapper().writeValueAsString(param))
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .exchange()
+                .expectBody(object : ParameterizedTypeReference<Response<Purchase>>() {})
+                .returnResult().responseBody?.result!!
+
+        Assert.assertEquals(param.telegramId, purchase.owner!!.telegramId!!.toLong())
+        Assert.assertEquals(param.sku, purchase.sku)
+        Assert.assertEquals(param.orderId, purchase.orderId)
+
+    }
 
 }

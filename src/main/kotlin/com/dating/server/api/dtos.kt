@@ -35,3 +35,5 @@ data class TrebaDTOApi(val owner: String,
 
 
 class SendGeoDataParam(val telegramId: Long, val lat: Double, val lon: Double, val city: String? = null)
+
+data class CreatePurchaseParam(val telegramId: Long, val sku: String, val orderId: String)

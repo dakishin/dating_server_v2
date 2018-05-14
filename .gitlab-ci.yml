@@ -1,9 +1,9 @@
 image: java:8-jdk
 
 stages:
-  - build
+#  - build
   - test
-  - deploy
+#  - deploy
 
 before_script:
 #  - echo `pwd` # debug
@@ -24,7 +24,7 @@ build:
 test:
   stage: test
   script:
-    - ./gradlew check
+    - ./gradlew test
 
 
 after_script:

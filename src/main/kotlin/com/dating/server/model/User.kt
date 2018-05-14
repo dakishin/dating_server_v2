@@ -68,12 +68,13 @@ class User(
          */
         val marriage: Int? = null,
 
+        @Column(name = "birthdate")
         val birthDate: Long? = null,
 
         val weight: Int? = null,
         val height: Int? = null,
 
-        val children: Int? = null ,//0 -no, 1 yes
+        val children: Int? = null,//0 -no, 1 yes
 
         /**
          * 0 православное христианство (член Церкви)
@@ -90,6 +91,7 @@ class User(
         /**
          * Географические названия ня языке  локали пользователя
          */
+        @Column(name="countrycode")
         val countryCode: String? = null,
         val country: String? = null,
         val city: String? = null,
@@ -114,9 +116,11 @@ class User(
          */
         val education: Int? = null,
 
+        @Column(name="pushid")
         val pushId: String? = null,
 
 
+        @Column(name="subscription")
         val isSubscription: Boolean = false,
 
         @Column(name = "phone_uuid")
@@ -129,7 +133,7 @@ class User(
     @Type(type = "com.dating.server.model.JsonStringUserType", parameters = [Parameter(name = "class", value = "com.dating.server.model.ProfileQuestions")])
     @Column(name = "profile_questions")
     val profileQuestions = ProfileQuestions()
-            
+
 
     val isRussian: Boolean
         get() = RUSSIAN_LOCALE.equals(locale, ignoreCase = true)
@@ -158,4 +162,5 @@ class User(
 
 
 }
+
 val RUSSIAN_LOCALE = "ru"

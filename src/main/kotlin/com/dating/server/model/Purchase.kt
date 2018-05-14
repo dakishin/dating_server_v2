@@ -7,8 +7,14 @@ import javax.persistence.*
  */
 @javax.persistence.Entity
 @Table(name = "purchase")
-data class Purchase(@ManyToOne(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.LAZY)
-                    @JoinColumn(name = "telegram_user_uuid") var owner: TelegramUser,
-                    var sku: String, @Column(name = "order_id") var orderId: String) : BaseEntity() {
+class Purchase(
+        @ManyToOne(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.LAZY)
+        @JoinColumn(name = "telegram_user_uuid")
+        val owner: TelegramUser? = null,
+
+        val sku: String? = null,
+
+        @Column(name = "order_id")
+        val orderId: String? = null) : BaseEntity() {
 
 }

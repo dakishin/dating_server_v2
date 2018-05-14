@@ -2,10 +2,9 @@ package com.dating.server.api
 
 import com.dating.server.dao.TelegramUserRepository
 import com.dating.server.dao.TrebaRepository
-import com.dating.server.model.TelegramUser
-import com.dating.server.model.TelegramUserDistance
-import com.dating.server.model.Treba
+import com.dating.server.model.*
 import com.dating.server.model.TrebaDTOApi
+import com.dating.server.service.PurchaseService
 import com.dating.server.service.TelegramUserService
 import com.dating.server.service.TrebaService
 import com.fasterxml.jackson.core.type.TypeReference
@@ -22,7 +21,9 @@ import java.util.logging.Level
  */
 @RestController()
 @RequestMapping(path = ["/api_v3"])
-class DatingApi(val telegramUserService: TelegramUserService, val trebaService: TrebaService, val trebaRepository: TrebaRepository, val telegramUserRepository: TelegramUserRepository) {
+class DatingApi(val purchaseService: PurchaseService, val telegramUserService: TelegramUserService,
+                val trebaService: TrebaService, val trebaRepository: TrebaRepository,
+                val telegramUserRepository: TelegramUserRepository) {
 
     @Transient
     private val LOG = LoggerFactory.getLogger(DatingApi::class.java)
@@ -73,6 +74,12 @@ class DatingApi(val telegramUserService: TelegramUserService, val trebaService: 
                 telegramUserRepository.searchNear(telegramId)
             }
 
+
+    @PostMapping(path = ["/createPurchase"])
+    fun createPurchase(@RequestBody param: CreatePurchaseParam) =
+            executeApiMethod {
+                purchaseService.create(param.telegramId, param.sku, param.orderId)
+            }
 
     fun <T> executeApiMethod(service: () -> T): Single<Response<T>> =
             Single
