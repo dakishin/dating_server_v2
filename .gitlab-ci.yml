@@ -3,12 +3,6 @@ image: java:8-jdk
 stages:
   - test
 
-before_script:
-#  - echo `pwd` # debug
-#  - echo "$CI_BUILD_NAME, $CI_BUILD_REF_NAME $CI_BUILD_STAGE" # debug
-#  - export GRADLE_USER_HOME=`pwd`/.gradle
-
-
 unit_test:
   stage: test
   script:
