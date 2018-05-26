@@ -7,19 +7,15 @@ import com.dating.server.model.TrebaDTOApi
 import com.dating.server.service.PurchaseService
 import com.dating.server.service.TelegramUserService
 import com.dating.server.service.TrebaService
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
-import io.reactivex.Observable
 import io.reactivex.Single
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
 import java.util.ArrayList
-import java.util.logging.Level
 
 /**
  * Created by dakishin@mail.com  14.04.18.
  */
-@RestController()
+@RestController
 @RequestMapping(path = ["/api_v3"])
 class DatingApi(val purchaseService: PurchaseService, val telegramUserService: TelegramUserService,
                 val trebaService: TrebaService, val trebaRepository: TrebaRepository,
@@ -28,6 +24,14 @@ class DatingApi(val purchaseService: PurchaseService, val telegramUserService: T
     @Transient
     private val LOG = LoggerFactory.getLogger(DatingApi::class.java)
 
+//curl -i http://localhost:8080/api_v3/test_get
+    @GetMapping(path = ["/test_get"])
+    fun testGet(): Single<String> = Single.just("Response")
+
+//curl --header "Content-Type: application/json" --request POST --data '{"param1":"xyz","param2":22}' http://localhost:8080/api_postest_
+    data class TestBody(val param1:String,val param2:Int)
+    @PostMapping(path = ["/test_post"])
+    fun testPost(@RequestBody testParam: TestBody): Single<String> = Single.just("Response")
 
 
     @PostMapping(path = ["/registerTelegramUser"])
