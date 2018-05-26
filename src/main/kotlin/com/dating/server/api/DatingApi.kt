@@ -29,10 +29,6 @@ class DatingApi(val purchaseService: PurchaseService, val telegramUserService: T
     private val LOG = LoggerFactory.getLogger(DatingApi::class.java)
 
 
-    @GetMapping(path = ["hello"])
-    fun get(): Observable<String> {
-        return Observable.just("hello")
-    }
 
     @PostMapping(path = ["/registerTelegramUser"])
     fun createUser(@RequestBody createUserParam: RegisterTelegramUserParam): Single<Response<TelegramUser>> =
