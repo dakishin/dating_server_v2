@@ -21,7 +21,6 @@ build:
     - ./gradlew assemble
 
 
-
 test:
   stage: test
   script:
