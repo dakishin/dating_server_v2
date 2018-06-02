@@ -21,6 +21,19 @@ deploy_staging:
   - deploy
 
 
+deploy_prod:
+  stage: deploy
+  script:
+    - echo "Deploy to production server"
+  environment:
+    name: production
+    url: http://54.38.55.41:8082
+  when: manual
+  only:
+  - deploy
+
+
+
 
 after_script:
   - echo "End CI"
