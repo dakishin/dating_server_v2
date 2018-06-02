@@ -1,0 +1,14 @@
+def datingApiVersion=11
+def datingBuildType="dev"  // dev,prod,test
+
+
+
+if (project.hasProperty('datingBuildTypeParam')) {
+    datingBuildType=datingBuildTypeParam
+}
+
+ant.propertyfile(file: "src/main/resources/application.properties") {
+    entry(key: "dating.api.version", value: "$datingApiVersion")
+    entry(key: "spring.profiles.active", value: "$datingBuildType")
+}
+

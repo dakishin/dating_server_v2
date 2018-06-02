@@ -1,0 +1,13 @@
+image: java:8-jdk
+
+stages:
+  - test
+
+unit_test:
+  stage: test
+  script:
+    - ./gradlew test
+
+
+after_script:
+  - echo "End CI"
