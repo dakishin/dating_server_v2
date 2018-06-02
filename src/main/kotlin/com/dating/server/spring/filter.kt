@@ -23,9 +23,7 @@ class WebFilterMy : WebFilter {
         val isApiPath = exchange.request.path.pathWithinApplication().value().contains("/api_v3/")
         if (isApiPath) {
             return Mono.fromDirect<ServerWebExchange> { publisher ->
-
                 var completed = false
-
                 exchange.request.body
                         .subscribe(
                                 {

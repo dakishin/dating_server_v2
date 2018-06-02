@@ -18,6 +18,7 @@ apply plugin: 'kotlin-spring'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply from: "init.gradle"
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
@@ -44,7 +45,6 @@ repositories {
 
 
 dependencies {
-//	implementation fileTree(dir: 'libs', include: ['*.jar'])
 	compile('com.fasterxml.jackson.module:jackson-module-kotlin')
 	compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	compile("org.jetbrains.kotlin:kotlin-reflect")
@@ -68,7 +68,7 @@ dependencies {
 
 	compile "org.springframework.boot:spring-boot-starter-webflux"
 	compile "org.springframework.boot:spring-boot-starter-actuator"
-	compile "com.h2database:h2:1.4.194"
+//	compile "com.h2database:h2:1.4.194"
 
 	compile "org.postgresql:postgresql:9.4-1206-jdbc42"
 
