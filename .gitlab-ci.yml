@@ -1,12 +1,25 @@
 image: java:8-jdk
 
 stages:
-  - test
+  - build
+  - deploy
 
-unit_test:
-  stage: test
+build:
+  stage: build
+    script:
+      - ./gradlew build
+
+
+deploy_staging:
+  stage: deploy
   script:
-    - ./gradlew test
+    - echo "Deploy to staging server"
+  environment:
+    name: staging
+    url: http://54.38.55.41:8080
+  only:
+  - master
+
 
 
 after_script:
