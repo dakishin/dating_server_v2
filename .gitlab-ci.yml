@@ -1,9 +1,18 @@
 image: java:8-jdk
 
+
+#before_script:
+#  - apt-get --quiet update --yes
+#  - curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh |  bash
+#  - apt-get install gitlab-runner
+#  - gitlab-runner register -n --url https://gitlab.com/ --registration-token MZurArT1trtSSvbgz-tb --executor shell --description "My Runner"
+#  - usermod -aG docker gitlab-runner
+#  - docker info
 stages:
   - test
   - build
   - deploy
+
 
 
 test:

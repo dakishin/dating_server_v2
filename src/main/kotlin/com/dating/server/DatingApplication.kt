@@ -25,6 +25,7 @@ class DatingApplication {
 
 
 fun main(args: Array<String>) {
+    val i=0
     runApplication<DatingApplication>(*args)
 }
 
