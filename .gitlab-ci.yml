@@ -1,56 +1,10 @@
-image: java:8-jdk
+image: docker:stable
 
-
-#before_script:
-#  - apt-get --quiet update --yes
-#  - curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh |  bash
-#  - apt-get install gitlab-runner
-#  - gitlab-runner register -n --url https://gitlab.com/ --registration-token MZurArT1trtSSvbgz-tb --executor shell --description "My Runner"
-#  - usermod -aG docker gitlab-runner
-#  - docker info
-stages:
-  - test
-  - build
-  - deploy
-
-
-
-test:
-  stage: test
-  script:
-    - ./gradlew test
+before_script:
+- docker info
 
 build:
   stage: build
   script:
-    - ./gradlew build -x test
-
-
-deploy_staging:
-  stage: deploy
-  script:
-    - echo "Deploy to staging server"
-    - ./gradlew build -x test
-  environment:
-    name: staging
-    url: http://54.38.55.41:8080
-  only:
-  - deploy
-
-
-deploy_prod:
-  stage: deploy
-  script:
-    - echo "Deploy to production server"
-  environment:
-    name: production
-    url: http://54.38.55.41:8082
-  when: manual
-  only:
-  - deploy
-
-
-
-
-after_script:
-  - echo "End CI"
+  - docker build -t my-docker-image .
+  - docker run my-docker-image /script/to/run/tests
