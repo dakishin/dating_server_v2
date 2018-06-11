@@ -65,6 +65,9 @@ buildApp:
     - gradle -x build
   only:
     - branches
+  artifacts:
+    paths:
+    - build/libs/
 
 build:
   stage: build
