@@ -41,6 +41,7 @@ variables:
   HELM_VERSION: 2.6.1
 
 stages:
+  - buildApp
   - build
   - test
   - review
@@ -51,6 +52,20 @@ stages:
   - performance
   - cleanup
 
+
+buildApp:
+  stage: buildApp
+  image: gradle:alpine
+  services:
+  - docker:stable-dind
+  variables:
+    GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  script:
+    - export GRADLE_USER_HOME=`pwd`/.gradle
+    - gradle -x build
+  only:
+    - branches
+
 build:
   stage: build
   image: docker:stable-git
@@ -60,6 +75,7 @@ build:
     DOCKER_DRIVER: overlay2
   script:
     - setup_docker
+    - makeApp
     - build
   only:
     - branches
