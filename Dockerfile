@@ -6,7 +6,7 @@ WORKDIR /app
 
 EXPOSE 5000
 
-COPY build/libs/*.jar /app/service.jar
+COPY temp/*.jar /app/service.jar
 
 CMD ["java", "-jar","-Dspring.profiles.active=dev", "/app/service.jar"]
 
