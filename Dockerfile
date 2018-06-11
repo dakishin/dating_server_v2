@@ -4,7 +4,7 @@ MAINTAINER <dakishin@gmail.com>
 # Set the working directory to /app
 WORKDIR /app
 
-EXPOSE 8080
+EXPOSE 5000
 
 COPY build/libs/*.jar /app/service.jar
 
