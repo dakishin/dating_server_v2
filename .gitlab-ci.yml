@@ -68,6 +68,8 @@ buildApp:
 
 build:
   stage: build
+  dependencies:
+  - buildApp
   image: docker:stable-git
   services:
   - docker:stable-dind
@@ -75,7 +77,6 @@ build:
     DOCKER_DRIVER: overlay2
   script:
     - setup_docker
-    - makeApp
     - build
   only:
     - branches
