@@ -41,7 +41,7 @@ variables:
   HELM_VERSION: 2.6.1
 
 stages:
-#  - buildApp
+  - buildApp
   - build
   - test
   - review
@@ -71,8 +71,8 @@ buildApp:
 
 build:
   stage: build
-#  dependencies:
-#  - buildApp
+  dependencies:
+  - buildApp
   image: docker:stable-git
   services:
   - docker:stable-dind
@@ -144,18 +144,18 @@ sast:
   artifacts:
     paths: [gl-sast-report.json]
 
-#dependency_scanning:
-#  image: docker:stable
-#  variables:
-#    DOCKER_DRIVER: overlay2
-#  allow_failure: true
-#  services:
-#    - docker:stable-dind
-#  script:
-#    - setup_docker
-#    - dependency_scanning
-#  artifacts:
-#    paths: [gl-dependency-scanning-report.json]
+dependency_scanning:
+  image: docker:stable
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  services:
+    - docker:stable-dind
+  script:
+    - setup_docker
+    - dependency_scanning
+  artifacts:
+    paths: [gl-dependency-scanning-report.json]
 
 container_scanning:
   image: docker:stable
@@ -664,7 +664,6 @@ rollout 100%:
 
       echo "Configuring $CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG docker image..."
       docker create --expose 5000 --env PORT=5000 --name="$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" /bin/herokuish procfile start web
-#      docker build -t "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
       docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
       docker rm "$CI_CONTAINER_NAME" >/dev/null
       echo ""
