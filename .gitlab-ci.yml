@@ -649,10 +649,6 @@ rollout 100%:
       echo ""
     fi
 
-#    if [[ -f Dockerfile ]]; then
-#      echo "Building Dockerfile-based application..."
-#      docker build -t "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" .
-#    else
     echo "Building Heroku-based application using gliderlabs/herokuish docker image..."
     docker run -i --name="$CI_CONTAINER_NAME" -v "$(pwd):/tmp/app:ro" gliderlabs/herokuish /bin/herokuish buildpack build
     docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
@@ -665,7 +661,6 @@ rollout 100%:
     docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
     docker rm "$CI_CONTAINER_NAME" >/dev/null
     echo ""
-#    fi
 
     echo "Pushing to GitLab Container Registry..."
     docker push "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
