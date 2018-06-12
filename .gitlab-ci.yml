@@ -655,6 +655,9 @@ rollout 100%:
     docker rm "$CI_CONTAINER_NAME" >/dev/null
     echo ""
 
+    echo "Directories"
+    ls
+
     echo "Configuring $CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG docker image..."
     docker build -t "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" .
     docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
