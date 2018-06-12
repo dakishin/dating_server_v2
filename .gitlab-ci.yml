@@ -41,7 +41,7 @@ variables:
   HELM_VERSION: 2.6.1
 
 stages:
-  - buildApp
+#  - buildApp
   - build
   - test
   - review
@@ -71,8 +71,8 @@ buildApp:
 
 build:
   stage: build
-  dependencies:
-  - buildApp
+#  dependencies:
+#  - buildApp
   image: docker:stable-git
   services:
   - docker:stable-dind
