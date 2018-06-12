@@ -6,6 +6,9 @@ WORKDIR /app
 
 EXPOSE 5000
 
+
+RUN ./gradlew -x build
+
 COPY temp/*.jar /app/service.jar
 
 CMD ["java", "-jar","-Dspring.profiles.active=dev", "/app/service.jar"]

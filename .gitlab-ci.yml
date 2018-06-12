@@ -144,18 +144,18 @@ sast:
   artifacts:
     paths: [gl-sast-report.json]
 
-dependency_scanning:
-  image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
-  allow_failure: true
-  services:
-    - docker:stable-dind
-  script:
-    - setup_docker
-    - dependency_scanning
-  artifacts:
-    paths: [gl-dependency-scanning-report.json]
+#dependency_scanning:
+#  image: docker:stable
+#  variables:
+#    DOCKER_DRIVER: overlay2
+#  allow_failure: true
+#  services:
+#    - docker:stable-dind
+#  script:
+#    - setup_docker
+#    - dependency_scanning
+#  artifacts:
+#    paths: [gl-dependency-scanning-report.json]
 
 container_scanning:
   image: docker:stable
@@ -652,10 +652,10 @@ rollout 100%:
       echo ""
     fi
 
-    if [[ -f Dockerfile ]]; then
-      echo "Building Dockerfile-based application..."
-      docker build -t "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" .
-    else
+#    if [[ -f Dockerfile ]]; then
+#      echo "Building Dockerfile-based application..."
+#      docker build -t "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" .
+#    else
       echo "Building Heroku-based application using gliderlabs/herokuish docker image..."
       docker run -i --name="$CI_CONTAINER_NAME" -v "$(pwd):/tmp/app:ro" gliderlabs/herokuish /bin/herokuish buildpack build
       docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
@@ -663,11 +663,12 @@ rollout 100%:
       echo ""
 
       echo "Configuring $CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG docker image..."
-      docker create --expose 5000 --env PORT=5000 --name="$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" /bin/herokuish procfile start web
+#      docker create --expose 5000 --env PORT=5000 --name="$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" /bin/herokuish procfile start web
+      docker build -t "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
       docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
       docker rm "$CI_CONTAINER_NAME" >/dev/null
       echo ""
-    fi
+#    fi
 
     echo "Pushing to GitLab Container Registry..."
     docker push "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
