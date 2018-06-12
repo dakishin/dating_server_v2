@@ -52,21 +52,21 @@ stages:
   - cleanup
 
 
-buildApp:
-  stage: buildApp
-  image: gradle:alpine
-  services:
-  - docker:stable-dind
-  variables:
-    GRADLE_OPTS: "-Dorg.gradle.daemon=false"
-  script:
-    - export GRADLE_USER_HOME=`pwd`/.gradle
-    - gradle -x build
-  only:
-    - branches
-  artifacts:
-    paths:
-    - build/libs/
+#buildApp:
+#  stage: buildApp
+#  image: gradle:alpine
+#  services:
+#  - docker:stable-dind
+#  variables:
+#    GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+#  script:
+#    - export GRADLE_USER_HOME=`pwd`/.gradle
+#    - gradle -x build
+#  only:
+#    - branches
+#  artifacts:
+#    paths:
+#    - build/libs/
 
 build:
   stage: build
